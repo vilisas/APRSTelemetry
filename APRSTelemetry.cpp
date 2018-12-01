@@ -1,3 +1,10 @@
+/*
+ * APRSTelemetry.h
+ *
+ *  Created on: 2017-11-28
+ *      Author: Vilius, LY3FF
+ */
+
 #include "APRSTelemetry.h"
 #include <Arduino.h>
 
@@ -68,6 +75,12 @@
 	Serial.print(F("packet_length="));
 	Serial.println(this->_packet_length);
 
+	//	call actual method (if set) to send packet
+	//	this class doesn't know how to push packet in the air, but konws what to call to do it
+		if (this->send_packet__ != nullptr) {
+			this->send_packet__();
+		}
+
 	memset(_packet_buffer,0,sizeof(_packet_buffer));
 	_packet_length=0;
     }
@@ -86,45 +99,7 @@
 	return false;
     }
 
-    void APRSTelemetry::readTemperatureSensors(){
-
-//	  Serial.print(F("Requesting temperatures..."));
-//	_sensors->requestTemperatures();
-//	  Serial.println(F("DONE"));
-//		  Serial.print(F("Temperature for the device 1 (index 0) is: "));
-//		  Serial.println(sensors.getTempCByIndex(0)); // onboard
-//		  Serial.println(sensors.getTempCByIndex(1)); // ant laido
-
-
-    }
-    void APRSTelemetry::setBatteryVoltage(double voltage){
-	// read ADC channel, calculate value and store it to class attribute
-	// Jei reference voltage: 5.20V  daliklis: + 3k --- 750R --- (-)
-	// max adc reiksme = 1024 prie 26V
-
-//  uint16_t adcValue = analogRead(VOLTAGE_ADC_PIN);
-//	Serial.print(F("adcValue="));
-//	Serial.println(adcValue);
-//	this->_battery_voltage = ((double) (adcValue * _mbMaxVoltage) / 1024);
-    	this->_battery_voltage = voltage;
-	/*Parodo baterijos itampa serial porte, BET, itampa skaiciuojama analog reference atzvilgiu, kas pas mus yra maitinimo itampa.
-	 * Kai modulis maitinasi is baterijos per itampos stabilizatoriu, tai analog reference = 3.2V, bet jei prisijungiam per USB
-	 * tai itampa gaunasi 5V. Rezultate _battery_voltage reiksme bus skirtinga. Darbiniam rezime telemetrijos pakete viskas turetu eiti.
-	 * Norint serial porte matyti teisinga reiksme, reikia pakeisti MB_ADC_VOLTAGE is 3.2 i 5.0
-	 */
-	Serial.println(F("Battery Voltage:"));
-	Serial.println(this->_battery_voltage);
-    }
-
 void APRSTelemetry::setup(){
-//    Serial.println(F("APRSTelemetry::setup()\nInitializing temp. sensors"));
-
-//    this->_oneWire = new OneWire(ONE_WIRE_BUS);
-//    this->_sensors = new DallasTemperature(this->_oneWire);
-
-//    _sensors->begin();
-//    _sensors->setResolution(9); // zemesne rezoliucija - greiciau nuskaito (9 bitai - puses laipsnio tikslumu)
-
 
 }
 
@@ -148,10 +123,11 @@ void APRSTelemetry::loop(){
     if (seconds - this->_ts_telemetry_packet > TELEMETRY_PACKET_INTERVAL){
 	this->generateTelemetryPacket();
 	this->sendTelemetryPacket();
+
 	this->_ts_telemetry_packet = seconds;
     }
 
-    if (seconds - this->_ts_packet_to_send > 45) {
+    if (seconds - this->_ts_packet_to_send > TELEMETRY_PACKET_INTERVAL) {
 	switch (_packet_to_send) {
 	case 0:
 	    this->generateUnitsPacket();
