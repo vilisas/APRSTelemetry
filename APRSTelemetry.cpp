@@ -27,33 +27,6 @@
 
     }
 
-    // generate parameters packet
-    void APRSTelemetry::generateParametersPacket(){
-	Serial.println(F("Generating parameters packet"));
-	packet_length = strlen_P(_tpn);
-	strncpy_P(packet_buffer, _tpn, packet_length);
-    }
-
-	//generate unit description packet
-    void APRSTelemetry::generateUnitsPacket(){
-	Serial.println(F("Generating units packet"));
-	packet_length = strlen_P(_tpu);
-	strncpy_P(packet_buffer, _tpu, packet_length);
-    }
-
-//  generate equations packet
-    void APRSTelemetry::generateEQNSPacket(){
-	Serial.println(F("Generating equations packet"));
-	packet_length = strlen_P(_tpe);
-	strncpy_P(packet_buffer, _tpe, packet_length);
-    }
-
-    void APRSTelemetry::generateBITSPacket(){
-	Serial.println(F("Generating equations packet"));
-	packet_length = strlen_P(_tpb);
-	strncpy_P(packet_buffer, _tpb, packet_length);
-    }
-
 //  this sends already generated packet
     void APRSTelemetry::sendTelemetryPacket(){
 
@@ -117,28 +90,32 @@ void APRSTelemetry::loop(){
 	switch (_packet_to_send) {
 	case 0:
 //	    this->generateUnitsPacket();
+		packet_length = strlen_P(_tpu);
 		strncpy_P(packet_buffer, _tpu, packet_length);
 
 	    break;
 	case 1:
 //	    this->generateParametersPacket();
+		packet_length = strlen_P(_tpn);
 		strncpy_P(packet_buffer, _tpn, packet_length);
 
 	    break;
 	case 2:
 //	    this->generateEQNSPacket();
+		packet_length = strlen_P(_tpe);
 		strncpy_P(packet_buffer, _tpe, packet_length);
 
 	    break;
 	case 3:
 //	    this->generateBITSPacket();
+		packet_length = strlen_P(_tpb);
 		strncpy_P(packet_buffer, _tpb, packet_length);
 
 	    break;
 
 
 	}
-	++this->_packet_to_send %= 3;
+	++this->_packet_to_send %= 4;
 	this->sendTelemetryPacket();
 	this->_ts_packet_to_send = seconds;
     }

@@ -38,7 +38,7 @@ class APRSTelemetry{
 	void (*send_packet__)() = nullptr;
 	APRS_Base91 base91;
 
-    unsigned int _sequence_number = 0;
+    unsigned int _sequence_number = 3;
 
     double _battery_voltage=0;					// actual battery voltage
     unsigned int _temperature[2] = { 0, 0 };	// temperatures
@@ -51,10 +51,6 @@ class APRSTelemetry{
     unsigned int _ts_read_sensors = 0; //
     unsigned int _ts_telemetry_packet = 0;
 
-    void generateParametersPacket();
-    void generateUnitsPacket();
-    void generateEQNSPacket();
-    void generateBITSPacket();
     void sendTelemetryPacket();
 
 
