@@ -53,7 +53,6 @@ class APRSTelemetry{
 
     void sendTelemetryPacket();
 
-
     public:
     char packet_buffer[80];
     int packet_length = 0;
@@ -79,8 +78,6 @@ class APRSTelemetry{
 
     void updateTelemetryPacket();
     void updateTelemetryChannel(const TChannel channel, unsigned int value);
-
-
 };
 
 

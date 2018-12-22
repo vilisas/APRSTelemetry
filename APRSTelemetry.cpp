@@ -78,9 +78,6 @@ void APRSTelemetry::updateTelemetryChannel(const TChannel channel, unsigned int 
 void APRSTelemetry::setup(){
 	memset(_telemetry_comment, '!', sizeof(_telemetry_comment));
 	_telemetry_comment[sizeof(_telemetry_comment)-1] = 0;
-
-
-
 }
 
 void APRSTelemetry::loop(){
@@ -112,8 +109,6 @@ void APRSTelemetry::loop(){
 		strncpy_P(packet_buffer, _tpb, packet_length);
 
 	    break;
-
-
 	}
 	++this->_packet_to_send %= 4;
 	this->sendTelemetryPacket();
